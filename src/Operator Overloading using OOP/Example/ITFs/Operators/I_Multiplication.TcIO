@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <Itf Name="I_Multiplication" Id="{b32c6ee3-f486-4a6e-bb86-8a82b5f7d6e7}">
+    <Declaration><![CDATA[INTERFACE I_Multiplication EXTENDS I_Operator
+]]></Declaration>
+    <Method Name="Times" Id="{f82a5516-a9b2-42cb-b1fb-b7e1929e16de}">
+      <Declaration><![CDATA[METHOD Times : I_Multiplication
+VAR_INPUT
+	ipObject : I_Object;
+END_VAR
+VAR_OUTPUT
+	e : E_Error;
+END_VAR
+
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

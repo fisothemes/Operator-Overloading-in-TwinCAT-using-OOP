@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <Itf Name="I_Vector" Id="{a5b20593-58ec-488d-9d6c-09788d737ec4}">
+    <Declaration><![CDATA[INTERFACE I_Vector EXTENDS I_Object
+]]></Declaration>
+    <Method Name="ToArray" Id="{c70895f5-952c-48db-b4f2-aeede81127d3}">
+      <Declaration><![CDATA[METHOD ToArray : ARRAY[0..2] OF LREAL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="X" Id="{98948d46-6fc2-4df3-9cc0-d075dedef1ef}">
+      <Declaration><![CDATA[PROPERTY X : LREAL]]></Declaration>
+      <Get Name="Get" Id="{ecc948c3-67ca-4aa1-a73c-91260d10a5f2}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{f3aab3e8-6fc2-4dfa-a706-f409d00872c0}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="Y" Id="{a7d4c1d6-5eb9-4de6-98ac-2648803ecb8f}">
+      <Declaration><![CDATA[PROPERTY Y : LREAL]]></Declaration>
+      <Get Name="Get" Id="{bb79637b-d797-4ff2-8461-b7e8190be576}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{7a237524-3af9-4d69-b66e-4aa0e8dc7c88}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="Z" Id="{a25933c9-7092-4059-8208-e4c757079866}">
+      <Declaration><![CDATA[PROPERTY Z : LREAL]]></Declaration>
+      <Get Name="Get" Id="{f289ea35-4814-493a-b466-831d89f66c22}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{fbe292cd-c146-4498-af9e-b4559e8f8e42}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+  </Itf>
+</TcPlcObject>

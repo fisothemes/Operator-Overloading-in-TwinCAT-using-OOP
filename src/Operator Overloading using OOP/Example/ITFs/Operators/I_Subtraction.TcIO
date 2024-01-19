@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <Itf Name="I_Subtraction" Id="{17d380c0-8d1c-4946-923f-f0691f5322a7}">
+    <Declaration><![CDATA[INTERFACE I_Subtraction EXTENDS I_Operator
+]]></Declaration>
+    <Method Name="Minus" Id="{a6f93eaa-73b9-4460-b822-d966b5e5c5bd}">
+      <Declaration><![CDATA[METHOD Minus : I_Subtraction
+VAR_INPUT
+	ipObject : I_Object;
+END_VAR
+VAR_OUTPUT
+	e : E_Error;
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

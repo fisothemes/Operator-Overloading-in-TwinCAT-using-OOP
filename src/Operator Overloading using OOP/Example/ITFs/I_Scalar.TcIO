@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <Itf Name="I_Scalar" Id="{5b61c2c9-abc6-4b07-9b80-a1b981239cb8}">
+    <Declaration><![CDATA[INTERFACE I_Scalar EXTENDS I_Object
+]]></Declaration>
+    <Method Name="ToF64" Id="{d6873b24-3bad-4916-80dd-7faa0c69f00d}">
+      <Declaration><![CDATA[METHOD ToF64 : LREAL
+VAR_OUTPUT
+	e : E_Error;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="ToI64" Id="{eee124d9-daa2-4f19-9b83-d30d73ee064e}">
+      <Declaration><![CDATA[METHOD ToI64 : LINT
+VAR_OUTPUT
+	e : E_Error;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="ToU8" Id="{c5949093-17a5-4c79-9d18-067f2bfcaa3a}">
+      <Declaration><![CDATA[METHOD ToU8 : BYTE
+VAR_OUTPUT
+	e : E_Error;
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <POU Name="MAIN" Id="{36d1238f-0d46-4dcc-84f8-262dc2254684}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	bDoubleSquareScal, bAddVec, bCrossProd, bScaleVec: BOOL;
+	eError : E_Error;
+	fbScalar : FB_Scalar(2.2);
+	fbVec1 : FB_Vector(1,2,3);
+	fbVec2 : FB_Vector(3,2,1);
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF bDoubleSquareScal THEN 
+	bDoubleSquareScal := FALSE;
+	fbScalar.Times(fbScalar.Plus(fbScalar));
+	END_IF
+
+IF bAddVec THEN
+	bAddVec := FALSE;
+	fbVec1.Plus(fbVec2);
+	END_IF
+	
+IF bCrossProd THEN
+	bCrossProd := FALSE;
+	fbVec1.Times(fbVec2);
+	END_IF
+	
+IF bScaleVec THEN
+	bScaleVec := FALSE;
+	fbVec1.Times(fbScalar);
+	END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="95" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="86" Count="2" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="102" Count="2" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="92" Count="2" />
+      <LineId Id="91" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

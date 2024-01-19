@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <Itf Name="I_Operator" Id="{ee3147cf-4b2d-48de-a79b-65b9016a509c}">
+    <Declaration><![CDATA[// Base interface for an operator.
+INTERFACE I_Operator EXTENDS I_Object
+]]></Declaration>
+  </Itf>
+</TcPlcObject>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <DUT Name="E_Error" Id="{975f58a8-b3c9-47d4-965d-f9fee68fe5ee}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_Error :
+(
+	NoError := 0,
+	IntegerOverflow := 10,
+	NaN,
+	PositiveInfinity,
+	NegativeInfinity,
+	Truncation,
+	TypeMismatch := 100
+)BYTE;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

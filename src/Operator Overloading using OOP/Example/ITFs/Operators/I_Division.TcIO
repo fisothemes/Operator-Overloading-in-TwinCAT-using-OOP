@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <Itf Name="I_Division" Id="{1f784833-fa93-48e6-a851-050ec3d60265}">
+    <Declaration><![CDATA[INTERFACE I_Division EXTENDS I_Operator
+]]></Declaration>
+    <Method Name="DivideBy" Id="{769c7afd-a9e0-4648-bb6d-3329865fb9e0}">
+      <Declaration><![CDATA[METHOD DivideBy : I_Division
+VAR_INPUT
+	ipObject : I_Object;
+END_VAR
+VAR_OUTPUT
+	e : E_Error;
+END_VAR
+
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <POU Name="FB_Vector" Id="{a3e3f989-5383-4684-9365-351b5d5ddbc2}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'no_explicit_call' := 'do not call this function block directly'}
+FUNCTION_BLOCK FB_Vector IMPLEMENTS I_Vector, I_Addition, I_Subtraction, I_Multiplication
+VAR
+	_fX, _fY, _fZ : LREAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="FB_init" Id="{5e146931-1a8b-485c-a8f5-25b63288d0d0}">
+      <Declaration><![CDATA[{attribute 'hide'}
+METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	fX, fY, fZ : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.SetValue(fX, fY, fZ);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Minus" Id="{8d6c7050-0ff6-4ab0-a242-534401decfff}">
+      <Declaration><![CDATA[METHOD Minus : I_Subtraction
+VAR_INPUT
+	ipObject : I_Object;
+END_VAR
+VAR_OUTPUT
+	e : E_Error;
+END_VAR
+VAR
+	ipVector : I_Vector;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Minus := THIS^;
+
+IF NOT __QUERYINTERFACE(ipObject, ipVector) THEN e := E_Error.TypeMismatch; RETURN; END_IF
+
+THIS^._fX := THIS^._fX - ipVector.X;
+THIS^._fY := THIS^._fY - ipVector.Y;
+THIS^._fZ := THIS^._fZ - ipVector.Z;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Plus" Id="{5087b5ff-4e99-4c43-993f-4b57fa3ce74e}">
+      <Declaration><![CDATA[METHOD Plus : I_Addition
+VAR_INPUT
+	ipObject : I_Object;
+END_VAR
+VAR_OUTPUT
+	e : E_Error;
+END_VAR
+VAR
+	ipVector : I_Vector;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Plus := THIS^;
+
+IF NOT __QUERYINTERFACE(ipObject, ipVector) THEN e := E_Error.TypeMismatch; RETURN; END_IF
+
+THIS^._fX := THIS^._fX + ipVector.X;
+THIS^._fY := THIS^._fY + ipVector.Y;
+THIS^._fZ := THIS^._fZ + ipVector.Z;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetValue" Id="{d9885a12-06a6-429e-9b7e-42cdf297705b}">
+      <Declaration><![CDATA[METHOD SetValue : REFERENCE TO FB_Vector
+VAR_INPUT
+	fX, fY, fZ : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SetValue REF= THIS^;
+
+THIS^._fX := fX;
+THIS^._fY := fY;
+THIS^._fZ := fZ;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Times" Id="{d62c470e-1109-45a1-8f8e-9c3f6f9ddf37}">
+      <Declaration><![CDATA[METHOD Times : I_Multiplication
+VAR_INPUT
+	ipObject : I_Object;
+END_VAR
+VAR_OUTPUT
+	e : E_Error;
+END_VAR
+VAR
+	ipNumber : I_Scalar;
+	ipVector : I_Vector;
+	TmpX, TmpY, TmpZ : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Times := THIS^;
+
+// Scale vector.
+IF __QUERYINTERFACE(ipObject, ipNumber) THEN 
+	THIS^.SetValue( THIS^._fX * ipNumber.ToF64(),
+					THIS^._fY * ipNumber.ToF64(),
+					THIS^._fZ * ipNumber.ToF64());
+	RETURN;
+	END_IF
+
+// Do the cross-product.
+IF __QUERYINTERFACE(ipObject, ipVector) THEN 
+	TmpX := THIS^._fX; TmpY := THIS^._fY; TmpZ := THIS^._fZ;
+	THIS^.SetValue(	(TmpY*ipVector.Z) - (TmpZ*ipVector.Y),
+					(TmpZ*ipVector.X) - (TmpX*ipVector.Y),
+					(TmpX*ipVector.Y) - (TmpY*ipVector.X));
+	
+	RETURN; 
+	END_IF
+
+e := E_Error.TypeMismatch; ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ToArray" Id="{426b64b7-c7f6-4e3d-a17e-aee296eec29f}">
+      <Declaration><![CDATA[METHOD ToArray : ARRAY[0..2] OF LREAL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ToArray[0]:= THIS^._fX;
+ToArray[1]:= THIS^._fY;
+ToArray[2]:= THIS^._fZ;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="X" Id="{78d98864-2df4-4548-b5b8-7345b73f380f}">
+      <Declaration><![CDATA[PROPERTY X : LREAL]]></Declaration>
+      <Get Name="Get" Id="{c9132885-5c5b-4f0a-b8a2-fcdc7d99b0d7}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[X := THIS^._fX;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{1aa968b6-af80-49d0-9736-d65e016dbdaa}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^._fX := X;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Y" Id="{8b210bcc-2877-43dc-bb5c-5e2a0c50e47d}">
+      <Declaration><![CDATA[PROPERTY Y : LREAL]]></Declaration>
+      <Get Name="Get" Id="{66ce0378-c4c4-4aa4-830b-5dee598b822e}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Y := THIS^._fY;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{8e499bf2-af60-4e77-a1aa-4e3f0f629d69}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^._fY:= Y;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Z" Id="{fb0365b7-1fdd-4a89-828a-5fa742effd17}">
+      <Declaration><![CDATA[PROPERTY Z : LREAL]]></Declaration>
+      <Get Name="Get" Id="{29e3d436-10f6-4404-a55f-a061213ae47a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Z := THIS^._fZ;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{a36fee45-ea70-4a11-8ec2-87c5e753b9b6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^._fZ := Z;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <LineIds Name="FB_Vector">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Vector.FB_init">
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Vector.Minus">
+      <LineId Id="9" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="15" Count="2" />
+      <LineId Id="14" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Vector.Plus">
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_Vector.SetValue">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="6" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Vector.Times">
+      <LineId Id="10" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="27" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="23" Count="2" />
+      <LineId Id="34" Count="1" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="16" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Vector.ToArray">
+      <LineId Id="5" Count="2" />
+    </LineIds>
+    <LineIds Name="FB_Vector.X.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Vector.X.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Vector.Y.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Vector.Y.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Vector.Z.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Vector.Z.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <Itf Name="I_Addition" Id="{33682c8f-c96a-42a2-be65-4bb6500965e1}">
+    <Declaration><![CDATA[INTERFACE I_Addition EXTENDS I_Operator
+]]></Declaration>
+    <Method Name="Plus" Id="{bd2fbc22-1640-4c73-8334-bb19ffa0cd4f}">
+      <Declaration><![CDATA[METHOD Plus : I_Addition
+VAR_INPUT
+	ipObject : I_Object;
+END_VAR
+VAR_OUTPUT
+	e : E_Error;
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

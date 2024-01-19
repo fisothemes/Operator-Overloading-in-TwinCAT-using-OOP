@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <POU Name="FB_Scalar" Id="{06260915-57c3-4c39-8ab5-e6a4c7e7c262}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'no_explicit_call' := 'do not call this function block directly'}
+FUNCTION_BLOCK FB_Scalar IMPLEMENTS I_Scalar, I_Addition, I_Subtraction, I_Multiplication, I_Division
+VAR
+	_fValue : LREAL; 
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="DivideBy" Id="{b0d0123e-cfb1-4101-8e18-a861c0279c74}">
+      <Declaration><![CDATA[METHOD DivideBy : I_Division
+VAR_INPUT
+	ipObject : I_Object;
+END_VAR
+VAR_OUTPUT
+	e : E_Error;
+END_VAR
+VAR
+	Tmp : LREAL;
+	ipNumber : I_Scalar;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[DivideBy := THIS^;
+
+IF NOT __QUERYINTERFACE(ipObject, ipNumber) THEN e := E_Error.TypeMismatch; RETURN; END_IF
+
+Tmp := ipNumber.ToF64(e => e);
+IF Tmp = 0 THEN 
+	THIS^._fValue := SEL(Tmp > 0, -1*TO_LREAL('#Inf'), TO_LREAL('#Inf'));
+	RETURN;
+	END_IF
+
+IF e <> E_Error.NoError THEN 
+	THIS^._fValue := ipNumber.ToF64();
+	END_IF
+
+THIS^._fValue := THIS^.ToF64() / ipNumber.ToF64();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{63985488-ffd6-4997-a4e0-e9bffe3b7aa1}">
+      <Declaration><![CDATA[{attribute 'hide'}
+METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	fInitValue : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._fValue := fInitValue;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Minus" Id="{18369c4d-9f09-40b4-9308-b820645b5f26}">
+      <Declaration><![CDATA[METHOD Minus : I_Subtraction
+VAR_INPUT
+	ipObject : I_Object;
+END_VAR
+VAR_OUTPUT
+	e : E_Error;
+END_VAR
+VAR
+	e1, e2 : E_Error;
+	ipNumber : I_Scalar;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Minus := THIS^;
+
+IF NOT __QUERYINTERFACE(ipObject, ipNumber) THEN e := E_Error.TypeMismatch; RETURN; END_IF
+
+THIS^._fValue := THIS^.ToF64(e => e1) - ipNumber.ToF64(e => e2);
+
+e := MAX(e1, e2);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Plus" Id="{60384213-cda5-42bb-a2ed-7a4ea44476e7}">
+      <Declaration><![CDATA[METHOD Plus : I_Addition
+VAR_INPUT
+	ipObject : I_Object;
+END_VAR
+VAR_OUTPUT
+	e : E_Error;
+END_VAR
+VAR
+	e1, e2 : E_Error;
+	ipNumber : I_Scalar;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Plus := THIS^;
+
+IF NOT __QUERYINTERFACE(ipObject, ipNumber) THEN e := E_Error.TypeMismatch; RETURN; END_IF
+
+THIS^._fValue := THIS^.ToF64(e => e1) + ipNumber.ToF64(e => e2);
+
+e := MAX(e1, e2);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetValue" Id="{1949f961-9b2e-471c-8bbf-54413b825d1c}">
+      <Declaration><![CDATA[METHOD SetValue : REFERENCE TO FB_Scalar
+VAR_INPUT
+	fValue : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SetValue REF= THIS^;
+
+THIS^._fValue := fValue;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Times" Id="{2654030e-17b8-414f-9c51-0561518f02d5}">
+      <Declaration><![CDATA[METHOD Times : I_Multiplication
+VAR_INPUT
+	ipObject : I_Object;
+END_VAR
+VAR_OUTPUT
+	e : E_Error;
+END_VAR
+VAR
+	e1, e2 : E_Error;
+	ipNumber : I_Scalar;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Times := THIS^;
+
+IF NOT __QUERYINTERFACE(ipObject, ipNumber) THEN e := E_Error.TypeMismatch; RETURN; END_IF
+
+THIS^._fValue := THIS^.ToF64(e => e1) * ipNumber.ToF64( e => e2);
+
+e := MAX(e1, e2);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ToF64" Id="{b907d5d0-24ee-478b-a026-7a64638e8296}">
+      <Declaration><![CDATA[METHOD ToF64 : LREAL
+VAR_OUTPUT
+	e	: E_Error;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ToF64 := THIS^._fValue;
+
+IF TO_STRING(THIS^._fValue) = '#NaN' THEN 
+	e := E_Error.NaN;
+ELSIF TO_STRING(THIS^._fValue) = '#Inf' THEN
+	e := E_Error.PositiveInfinity;
+ELSIF TO_STRING(THIS^._fValue) = '-#Inf' THEN
+	e := E_Error.NegativeInfinity;
+	END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ToI64" Id="{52419fd5-870a-4326-9013-32b165d32938}">
+      <Declaration><![CDATA[METHOD ToI64 : LINT
+VAR_OUTPUT
+	e	: E_Error;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ToI64 := TO_LINT(THIS^._fValue);
+
+// Check for truncation.
+IF Tc2_Math.FRAC(THIS^._fValue) <> 0  THEN 
+	e := E_Error.Truncation;
+	END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ToU8" Id="{7391b4cf-f0f6-43c4-80a6-4b323817aa37}">
+      <Declaration><![CDATA[METHOD ToU8 : BYTE
+VAR_OUTPUT
+	e	: E_Error;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ToU8 := TO_BYTE(THIS^._fValue);
+
+// Check for truncation.
+IF Tc2_Math.FRAC(THIS^._fValue) <> 0  THEN 
+	e := E_Error.Truncation;
+	END_IF
+
+// Bounds check.
+IF THIS^._fValue < 0 OR THIS^._fValue > 255 THEN 
+	e := E_Error.IntegerOverflow;
+	END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_Scalar">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Scalar.DivideBy">
+      <LineId Id="10" Count="0" />
+      <LineId Id="16" Count="1" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="29" Count="3" />
+      <LineId Id="18" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_Scalar.FB_init">
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Scalar.Minus">
+      <LineId Id="9" Count="0" />
+      <LineId Id="14" Count="4" />
+      <LineId Id="13" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Scalar.Plus">
+      <LineId Id="7" Count="0" />
+      <LineId Id="17" Count="2" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="24" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Scalar.SetValue">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="6" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Scalar.Times">
+      <LineId Id="17" Count="1" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="29" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Scalar.ToF64">
+      <LineId Id="7" Count="0" />
+      <LineId Id="13" Count="6" />
+      <LineId Id="12" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Scalar.ToI64">
+      <LineId Id="7" Count="0" />
+      <LineId Id="13" Count="3" />
+      <LineId Id="12" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Scalar.ToU8">
+      <LineId Id="7" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="19" Count="2" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="14" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
